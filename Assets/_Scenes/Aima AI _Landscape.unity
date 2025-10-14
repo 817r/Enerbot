@@ -255,7 +255,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9781d0f8d21acbf4f9393239169fadb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5763400b98c8ffa4d906220c10f2108a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -589,6 +589,7 @@ GameObject:
   - component: {fileID: 118625960}
   - component: {fileID: 118625962}
   - component: {fileID: 118625961}
+  - component: {fileID: 118625963}
   m_Layer: 5
   m_Name: Box Background - Image
   m_TagString: Untagged
@@ -653,6 +654,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 118625959}
   m_CullTransparentMesh: 1
+--- !u!328 &118625963
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118625959}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: e55acdf62bbb9604fbc5067af6fb9b81, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 2
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_TimeUpdateMode: 2
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 0
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &137522890
 GameObject:
   m_ObjectHideFlags: 0
@@ -9445,7 +9482,7 @@ VideoPlayer:
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: <noninit>
   m_RenderMode: 2
-  m_AspectRatio: 2
+  m_AspectRatio: 0
   m_DataSource: 0
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
@@ -9458,7 +9495,7 @@ VideoPlayer:
   m_ControlledAudioTrackCount: 0
   m_PlayOnAwake: 0
   m_SkipOnDrop: 1
-  m_Looping: 0
+  m_Looping: 1
   m_WaitForFirstFrame: 0
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
@@ -9476,10 +9513,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vidPlayer: {fileID: 1729660985}
   vidClips_Male:
-  - {fileID: 32900000, guid: e55acdf62bbb9604fbc5067af6fb9b81, type: 3}
-  - {fileID: 32900000, guid: 0e704862e1ddbde4692fbeef212fa6ef, type: 3}
-  - {fileID: 32900000, guid: c4e11fbe8fb4aca4a8ec19c692a9f292, type: 3}
-  - {fileID: 32900000, guid: 96077a33db009ae45bc349cc77086d71, type: 3}
+  - {fileID: 32900000, guid: 39bcfad3d9edbad46ae77224e184000c, type: 3}
+  - {fileID: 32900000, guid: 4b28ac6b818225a40b69a021d3819707, type: 3}
+  - {fileID: 32900000, guid: 4b28ac6b818225a40b69a021d3819707, type: 3}
+  - {fileID: 32900000, guid: 4b28ac6b818225a40b69a021d3819707, type: 3}
   vidClips_Female:
   - {fileID: 32900000, guid: f601aa5d37af54a4ea688126f38e0a00, type: 3}
   - {fileID: 32900000, guid: 90a1e3ab1f3347d41b7ee2aab6a7cabb, type: 3}
@@ -11127,7 +11164,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3736462293467893792, guid: 356d214b752aaf340ab6865e9a475454, type: 3}
       propertyPath: genderAI
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3736462293467893793, guid: 356d214b752aaf340ab6865e9a475454, type: 3}
       propertyPath: m_RootOrder
