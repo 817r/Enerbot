@@ -12,7 +12,7 @@ This is essential for handling scene transitions and core game logic.
 
 > **Example scenes where `GameManager` is required:**  
 > - `Background Selection`  
-> - `Aima AI`
+> - `Enerbot AI`
 
 ---
 
@@ -22,7 +22,7 @@ To build the application in **landscape orientation**, follow these steps:
 
 1. **Use a scene with the `_Landscape` suffix**, e.g., `MainMenu_Landscape`, `Quiz_Landscape`, etc.
 2. **Disable the virtual keyboard** in the UI, if it's not required.
-3. **Update the scene switching logic** in the `GameManager_AIMA` script:
+3. **Update the scene switching logic** in the `GameManager_Enerbot` script:
    - Append `_Landscape` to the scene name when calling the `GoToScene...` function:
      ```csharp
      GoToScene("YourSceneName_Landscape");
