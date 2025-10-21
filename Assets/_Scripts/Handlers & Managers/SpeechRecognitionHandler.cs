@@ -30,14 +30,14 @@ public class SpeechRecognitionHandler : MonoBehaviour
     public void SendMsg(){
         string myText = uiHandler.inputFld.text;
 
-        StartCoroutine(azureAPI.SendChatReq(myText, PostReq)); // PostReq is the result after sending input from user, the response from AI Bot
+        StartCoroutine(azureAPI.SendChatReqNew(myText, PostReq)); // PostReq is the result after sending input from user, the response from AI Bot
     }
 
     // Set the OutputText to the response of the Bot
     void PostReq(string botMsg){
-        gcTTS.SynthesizeButtonOnClickHandler(botMsg);
+        //gcTTS.SynthesizeButtonOnClickHandler(botMsg);
         aimaHandler.SetOutputText(botMsg);
-        vidHandler.StartTalking();
+        //vidHandler.StartTalking();
     }
     
 }

@@ -11,6 +11,7 @@ public class TypeWriterFX : MonoBehaviour
     [Tooltip("Typing effect before the chars")]
     public string leadingChar = "";
     public bool leadingCharBeforeDelay = false;
+    public bool isTyping = false;
 
 
     private Coroutine currCoroutine;
@@ -38,14 +39,16 @@ public class TypeWriterFX : MonoBehaviour
             }
             uiHandler.outputText_AI.text += c;
             uiHandler.outputText_AI.text += leadingChar;
-
+            isTyping = true;
             yield return new WaitForSeconds(typeDelay);
+
+
         }
 
         if(leadingChar != ""){
             uiHandler.outputText_AI.text = uiHandler.outputText_AI.text.Substring(0, uiHandler.outputText_AI.text.Length - leadingChar.Length);
         }
-
+        isTyping = false;
     }
 
 }

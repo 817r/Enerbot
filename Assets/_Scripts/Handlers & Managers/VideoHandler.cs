@@ -23,6 +23,7 @@ public class VideoHandler : MonoBehaviour
     [Header("References")]
     public Custom_GC_TextToSpeech_SimpleExample gcTTS_Example;
     public GameManager_AIMA gameManager;
+    public TypeWriterFX TypeWriterFX;
 
     private void Start() {
         if(gameManager == null){
@@ -31,7 +32,7 @@ public class VideoHandler : MonoBehaviour
 
         if(gameManager.genderAI == AIGender.Male){
             vidPlayer.clip = vidClips_Male[0];
-            vidPlayer.isLooping = true;
+            //vidPlayer.isLooping = true;
             vidPlayer.Play();
 
         }else if(gameManager.genderAI == AIGender.Female){
@@ -46,15 +47,17 @@ public class VideoHandler : MonoBehaviour
 
     private void Update() {
         if(gameManager.genderAI == AIGender.Male){
-            if(vidPlayer.clip != vidClips_Male[0]){
-                // Change AI vid to go Idle after finish talking
-                if(!vidPlayer.isPlaying){
+            if (!vidPlayer.isPlaying)
+            {
+                Debug.Log($"Is Typing : {TypeWriterFX.isTyping}");
+                if (TypeWriterFX.isTyping)
+                {
+                    StartTalking();
+                } else 
                     GoIdle();
-                }
-                
-            }
-
-        }else if(gameManager.genderAI == AIGender.Female){
+            } 
+        }
+        else if(gameManager.genderAI == AIGender.Female){
             if(vidPlayer.clip != vidClips_Female[0]){
                 // Change AI vid to go Idle after finish talking
                 if(!vidPlayer.isPlaying){
@@ -69,7 +72,7 @@ public class VideoHandler : MonoBehaviour
     }
 
     public void StartTalking(){
-        vidPlayer.isLooping = true;
+        //vidPlayer.isLooping = true;
 
         if(vidPlayer.isPlaying){
             vidPlayer.Stop();
@@ -89,20 +92,21 @@ public class VideoHandler : MonoBehaviour
 
     public void GoIdle(){
         if(gameManager.genderAI == AIGender.Male){
-            vidPlayer.clip = vidClips_Male[0];
+            int randomNum = Random.Range(0, 2);
+            vidPlayer.clip = vidClips_Male[randomNum];
 
         }else if(gameManager.genderAI == AIGender.Female){
             vidPlayer.clip = vidClips_Female[0];
 
         }
         
-        vidPlayer.isLooping = true;
+        //vidPlayer.isLooping = true;
         vidPlayer.Play();
         Debug.Log("Changing AI to Idle State, Vidplayer finish talking");
     }
 
     int GetTalkVariant(){
-        int randomNum = Random.Range(1,4); // Random int from 1 - 3
+        int randomNum = Random.Range(2,4); // Random int from 1 - 3
         Debug.Log("Changed to Talk Variant " + randomNum);
         return randomNum;
     }
@@ -120,5 +124,8 @@ public class VideoHandler : MonoBehaviour
 
         vidPlayer.Play();
     }
-
+    public void Talk()
+    {
+        StartTalking();
+    }
 }

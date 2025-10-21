@@ -80,10 +80,10 @@ public class AzureAPIHandler : MonoBehaviour
     // https://app-backend-poophqnjqo6k6.azurewebsites.net/chat (OLD V2)
     public string apiURL = "";
     public string apiKey = "";
-    
-    public delegate void OnSendChatRequestFinished(string _botMessageContent); 
 
-    public IEnumerator SendChatReq(string msgContent, OnSendChatRequestFinished callback){
+    public delegate void OnSendChatRequestFinished(string _botMessageContent);
+
+    public IEnumerator SendChatReq(string msgContent, OnSendChatRequestFinished callback) {
         ChatRequestData reqData = new ChatRequestData();
 
         reqData.data_sources = new DataSource[]{
@@ -92,24 +92,26 @@ public class AzureAPIHandler : MonoBehaviour
                 type = "azure_search",
                 parameters = new DataSourceParameters
                 {
-                    endpoint = @"https://azureopenaisearchptmn.search.windows.net",
-                    index_name = "sieraexternal",
-                    semantic_configuration = "default",
-                    query_type = "semantic",
+                    endpoint = @"https://agentic.daltek.id/ask",
+                    index_name = "",
+                    semantic_configuration = "",
+                    query_type = "",
                     fields_mapping = new FieldsMapping(),
                     in_scope = true,
                     role_information = "",
                     filter = null,
-                    strictness = 3,
-                    top_n_documents = 5,
+                    strictness = 0,
+                    top_n_documents = 0,
                     authentication = new Authentication
                     {
-                        type = "api_key",
-                        key = "giDkRr6y8m2diEAex9WDpBqLn1qFZlZQpamzgV2NHCAzSeCTJpfG"
+                        type = "",
+                        key = ""
                     }
                 }
             }
         };
+
+        Debug.Log($"{reqData.data_sources}");
 
         reqData.messages = new MessageData[]{
             new MessageData{
@@ -119,7 +121,7 @@ public class AzureAPIHandler : MonoBehaviour
         };
 
 
-#region Aima
+        #region Aima
         // (OLD)
         // reqData.temperature = 0.3f;
         // reqData.use_semantic_captions = false;
@@ -140,16 +142,16 @@ public class AzureAPIHandler : MonoBehaviour
         reqData.stop = null;
         reqData.stream = false;
 
-#endregion
-       
-#region For Testing
+        #endregion
+
+        #region For Testing
         // reqData.temperature = 0;
         // reqData.top_p = 1;
         // reqData.max_tokens = 800;
         // reqData.stop = null;
         // reqData.stream = false;
-#endregion
-       
+        #endregion
+
         // Create HTTP Request
         string jsonReq = JsonUtility.ToJson(reqData);
         UnityWebRequest request = new UnityWebRequest(apiURL, "POST");
@@ -159,23 +161,24 @@ public class AzureAPIHandler : MonoBehaviour
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("api-key", apiKey);
+        request.SetRequestHeader("Authorization", "Bearer " + apiKey);
 
         yield return request.SendWebRequest();
 
-        if(request.result == UnityWebRequest.Result.Success){
+        if (request.result == UnityWebRequest.Result.Success) {
             string jsonResponse = request.downloadHandler.text;
             Debug.Log("Response: " + jsonResponse);
 
             JObject jsonObj = JObject.Parse(jsonResponse);
-            
+
             // string _botMsg = jsonObj["choices"][0]["message"]["content"].ToString().Split('[')[0].Trim();
             string _botMsg = jsonObj["message"]["content"].ToString().Split('[')[0].Trim();
             Debug.Log("botMessage: " + _botMsg);
             callback(_botMsg);
 
         }
-        else{
+        else {
+            Debug.Log($"{request.result}, ");
             Debug.LogError("Error-Error: " + request.error);
             Debug.LogError("Error-Payload: " + jsonReq);
             Debug.LogError("Error-Result: " + request.responseCode + " " + request.result);
@@ -183,6 +186,53 @@ public class AzureAPIHandler : MonoBehaviour
             Debug.LogError("Error-ApiKey: " + apiKey);
             Debug.LogError("Error-Content " + msgContent);
         }
+
+    }
+
+    public class UserData
+    {
+        public string query;
+    }
+
+    public class Resp
+    {
+        public string response;
+    }
+
+    public IEnumerator SendChatReqNew(string msgContent, OnSendChatRequestFinished callback)
+    {
+        UnityWebRequest request = new UnityWebRequest(apiURL, "POST");
+
+        var user = new UserData();
+        user.query = msgContent;
+
+        string json = JsonUtility.ToJson(user);
+
+        var req = new UnityWebRequest("https://agentic.daltek.id/ask", "POST");
+        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+        req.uploadHandler = new UploadHandlerRaw(jsonToSend);
+        req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        req.SetRequestHeader("Content-Type", "application/json");
+        req.SetRequestHeader("Authorization", "Bearer " + apiKey);
+        req.SetRequestHeader("Connection", "keep-alive");
+
+
+        yield return req.SendWebRequest();
+
+        Debug.LogWarning(req.result);
+        Debug.Log("Request Payload: " + json);
+
+        //Debug.Log($"down handler : {req.downloadHandler.text}");
+        byte[] result = req.downloadHandler.data;
+        string responseText = System.Text.Encoding.UTF8.GetString(result);
+
+        Debug.Log("Response: " + responseText);
+        JObject jsonObj = JObject.Parse(responseText);
+
+        Debug.Log($"jsonObj: {jsonObj}");
+        Resp resp = JsonUtility.FromJson<Resp>(responseText);
+        Debug.Log($"resp.msg: {resp.response}");
+        callback(resp.response);
 
     }
 }
