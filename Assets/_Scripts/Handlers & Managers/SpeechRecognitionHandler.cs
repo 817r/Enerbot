@@ -14,8 +14,10 @@ public class SpeechRecognitionHandler : MonoBehaviour
     public Custom_GC_TextToSpeech_SimpleExample gcTTS;
     public AimaBotHandler aimaHandler;
     public VideoHandler vidHandler;
+    public AzureTTSRest azureTTS;
     [Tooltip("Automatically send the message after Voice Input")]
     public bool autoSend = true;
+    int responseCount = 0;
 
     public void SetInputFldText(string voiceInput){
         uiHandler.inputFld.text = voiceInput;
@@ -36,8 +38,9 @@ public class SpeechRecognitionHandler : MonoBehaviour
     // Set the OutputText to the response of the Bot
     void PostReq(string botMsg){
         //gcTTS.SynthesizeButtonOnClickHandler(botMsg);
-        aimaHandler.SetOutputText(botMsg);
         //vidHandler.StartTalking();
+        StartCoroutine(azureTTS.Speak(botMsg, $"Resp{responseCount}"));
+        responseCount++;
     }
     
 }

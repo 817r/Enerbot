@@ -82,7 +82,7 @@ public class AzureAPIHandler : MonoBehaviour
     public string apiKey = "";
 
     public delegate void OnSendChatRequestFinished(string _botMessageContent);
-
+    // DEPERCATED
     public IEnumerator SendChatReq(string msgContent, OnSendChatRequestFinished callback) {
         ChatRequestData reqData = new ChatRequestData();
 
