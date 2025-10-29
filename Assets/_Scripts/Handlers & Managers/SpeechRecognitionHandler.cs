@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using FrostweepGames.Plugins.GoogleCloud.SpeechRecognition.Examples;
 using FrostweepGames.Plugins.GoogleCloud.TextToSpeech.Example;
 using TMPro;
@@ -19,6 +20,19 @@ public class SpeechRecognitionHandler : MonoBehaviour
     public bool autoSend = true;
     int responseCount = 0;
 
+
+    private void Start()
+    {
+        string folderPath = Path.Combine(Application.persistentDataPath, azureTTS.outputFolderName);
+
+        if (Directory.Exists(folderPath))
+        {
+            string[] files = Directory.GetFiles(folderPath);
+            responseCount = files.Length;
+        }
+
+    }
+
     public void SetInputFldText(string voiceInput){
         uiHandler.inputFld.text = voiceInput;
 
@@ -31,8 +45,8 @@ public class SpeechRecognitionHandler : MonoBehaviour
     // Send input from user to API
     public void SendMsg(){
         string myText = uiHandler.inputFld.text;
-
-        StartCoroutine(azureAPI.SendChatReqNew(myText, PostReq)); // PostReq is the result after sending input from user, the response from AI Bot
+        StartCoroutine(azureTTS.Speak("Berfikir", "thinking"));
+        StartCoroutine(azureAPI.SendChatReqNew(myText, PostReq));
     }
 
     // Set the OutputText to the response of the Bot

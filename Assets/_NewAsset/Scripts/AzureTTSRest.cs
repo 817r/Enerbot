@@ -1,11 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Text;
 using System.IO;
-using System.Xml.Linq;
-using SimpleFileBrowser;
-using FrostweepGames.Plugins.GoogleCloud.SpeechRecognition;
+using System.Threading.Tasks;
+using Microsoft.CognitiveServices.Speech;
 
 public class AzureTTSRest : MonoBehaviour
 {
@@ -17,7 +16,7 @@ public class AzureTTSRest : MonoBehaviour
     [Space(10)]
     [Header("Output Settings")]
     public string outputFolderName = "TTS_Audio";
-    public AimaBotHandler aimaHandler;
+    public AimaBotHandler enerbotHandler;
 
     public IEnumerator Speak(string text, string fileName)
     {
@@ -39,21 +38,25 @@ public class AzureTTSRest : MonoBehaviour
         request.SetRequestHeader("X-Microsoft-OutputFormat", "audio-16khz-32kbitrate-mono-mp3");
 
         Debug.Log("Sending TTS request to Azure...");
-
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
         {
             byte[] audioData = request.downloadHandler.data;
-            string folderPath = Path.Combine(Application.dataPath, outputFolderName);
+
+            // Ensure output directory exists
+            string folderPath = Path.Combine(Application.persistentDataPath, outputFolderName);
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
 
-            string filePath = Path.Combine(folderPath, fileName + ".wav");
+            string filePath = Path.Combine(folderPath, fileName + ".mp3");
             File.WriteAllBytes(filePath, audioData);
-            Debug.Log($"Saved WAV to: {filePath}");
-            yield return StartCoroutine(LoadAndPlay(filePath));
-            aimaHandler.SetOutputText(text);
+            Debug.Log($"Azure TTS saved: {filePath}");
+
+            // Convert MP3 to AudioClip and play
+            yield return StartCoroutine(LoadAndPlayAudio(filePath));
+
+            enerbotHandler.SetOutputText(text);
         }
         else
         {
@@ -61,78 +64,21 @@ public class AzureTTSRest : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayAudioClip(string filePath)
+    private IEnumerator LoadAndPlayAudio(string filePath)
     {
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, AudioType.WAV))
-        {
-            yield return www.SendWebRequest();
+        using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, AudioType.MPEG);
+        yield return www.SendWebRequest();
 
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
-                audioSource.clip = clip;
-                audioSource.Play();
-                Debug.Log("Playing synthesized audio...");
-            }
-            else
-            {
-                Debug.LogError("Failed to load WAV: " + www.error);
-            }
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+            AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+            audioSource.clip = clip;
+            audioSource.Play();
+            Debug.Log("Playing Azure TTS Audio");
         }
-    }
-
-    private AudioClip CreateAudioClipFromPCM(byte[] pcmData, int offset, int length, int sampleRate, int channels)
-    {
-        int totalSamples = length / 2;
-        float[] samples = new float[totalSamples];
-
-        int sampleIndex = 0;
-        for (int i = offset; i < offset + length; i += 2)
+        else
         {
-            short value = System.BitConverter.ToInt16(pcmData, i);
-            samples[sampleIndex++] = Mathf.Clamp(value / 32768.0f, -1f, 1f);
-        }
-
-        AudioClip clip = AudioClip.Create("AzureTTS_Clip", totalSamples / channels, channels, sampleRate, false);
-        clip.SetData(samples, 0);
-        return clip;
-    }
-
-    private int DetectPCMOffset(byte[] bytes)
-    {
-        // Look for the "data" chunk header if it's a WAV
-        for (int i = 0; i < bytes.Length - 4; i++)
-        {
-            if (bytes[i] == 'd' && bytes[i + 1] == 'a' && bytes[i + 2] == 't' && bytes[i + 3] == 'a')
-            {
-                // Skip "data" + 4 bytes of chunk size
-                int offset = i + 8;
-                Debug.Log($"Detected WAV header, skipping first {offset} bytes");
-                return offset;
-            }
-        }
-        return 0; // assume pure PCM
-    }
-
-    private IEnumerator LoadAndPlay(string filePath)
-    {
-        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip("file://" + filePath, AudioType.WAV))
-        {
-            yield return www.SendWebRequest();
-
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                Debug.Log($"Loaded WAV from: {filePath} type : {www.GetType()}");
-                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
-                Debug.Log($"clip load {clip.loadState}");
-                audioSource.clip = clip;
-                audioSource.Play();
-                Debug.Log($"Playing {clip.name} saved WAV audio");
-            }
-            else
-            {
-                Debug.LogError("Failed to load WAV: " + www.error);
-            }
+            Debug.LogError("❌ Failed to load audio: " + www.error);
         }
     }
 }

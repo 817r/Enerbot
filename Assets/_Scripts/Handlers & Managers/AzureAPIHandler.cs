@@ -216,7 +216,7 @@ public class AzureAPIHandler : MonoBehaviour
         req.SetRequestHeader("Authorization", "Bearer " + apiKey);
         req.SetRequestHeader("Connection", "keep-alive");
 
-
+        botHandler.IsWaiting(true);
         yield return req.SendWebRequest();
 
         Debug.LogWarning(req.result);
@@ -235,4 +235,6 @@ public class AzureAPIHandler : MonoBehaviour
         callback(resp.response);
 
     }
+
+    public AimaBotHandler botHandler;
 }

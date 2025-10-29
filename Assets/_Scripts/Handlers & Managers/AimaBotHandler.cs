@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using FrostweepGames.Plugins.GoogleCloud.TextToSpeech.Example;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class AimaBotHandler : MonoBehaviour
     public UIHandler uiHandler;
     public TypeWriterFX typeWriter;
     public Custom_GC_TextToSpeech_SimpleExample gctts;
-    
+
     private void Start() {
         if(initUseTypewriter){
             typeWriter.UseTypewriterFX(initGreeting);
@@ -24,7 +25,7 @@ public class AimaBotHandler : MonoBehaviour
     }
 
     public void SetOutputText(string text){
-        if(typeWriter.useTypeWriter){
+        if (typeWriter.useTypeWriter){
             typeWriter.UseTypewriterFX(text);
         }else{
             uiHandler.outputText_AI.text = text;
@@ -33,6 +34,19 @@ public class AimaBotHandler : MonoBehaviour
         uiHandler.inputFld.interactable = true;
         uiHandler.sendBtn.interactable = true;
         // Debug.Log("Inpt Fld set Interactable");
+    }
+    public bool IsWaiting(bool waiting)
+    {
+        SetOutputWaiting();
+        return waiting;
+    }
+    public void SetOutputWaiting()
+    {
+        int i = 0;
+        for (i = 0; i < 4; i++)
+        {
+            typeWriter.UseTypewriterFX("Berfikir " + new string('.', i));
+        }
     }
 
 }
