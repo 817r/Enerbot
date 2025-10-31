@@ -5,24 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/_Scenes/Gender Selection.unity
-    guid: 7058c7d6bb622d5459f74fa192cab8b4
-  - enabled: 0
-    path: Assets/_Scenes/Background Selection.unity
-    guid: ea5d94b4381fead4093caf1dbdea1742
-  - enabled: 0
-    path: Assets/_Scenes/Aima AI.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 0
-    path: Assets/_Scenes/Testing/Test Chroma Key (Raw Img).unity
-    guid: d1894d825dac6d943a2572c8d7778686
-  - enabled: 0
-    path: Assets/_Scenes/Gender Selection _Landscape.unity
-    guid: 11db777aefc4a8b41a56d7c176a0b792
-  - enabled: 0
-    path: Assets/_Scenes/Background Selection _Landscape.unity
-    guid: eef066aab0ed0354197520f9b066cb73
   - enabled: 1
     path: Assets/_Scenes/Aima AI _Landscape.unity
     guid: 1a338af488226fa4e86f74e5470bb049

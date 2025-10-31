@@ -189,50 +189,75 @@ public class AzureAPIHandler : MonoBehaviour
 
     }
 
-    public class UserData
+    [System.Serializable]
+    public class Message
     {
-        public string query;
+        public string role;
+        public string content;
     }
 
-    public class Resp
+    [System.Serializable]
+    public class UserData
     {
-        public string response;
+        public List<Message> messages = new List<Message>(); // MUST be public + initialized
     }
 
     public IEnumerator SendChatReqNew(string msgContent, OnSendChatRequestFinished callback)
     {
-        UnityWebRequest request = new UnityWebRequest(apiURL, "POST");
-
         var user = new UserData();
-        user.query = msgContent;
 
-        string json = JsonUtility.ToJson(user);
+        var message = new Message();
+        message.role = "user";
+        message.content = msgContent;
+        user.messages.Add(message);
 
-        var req = new UnityWebRequest("https://agentic.daltek.id/ask", "POST");
+        Debug.Log($"msgContent: {message.content}");
+
+        string json = JsonUtility.ToJson(user, true);
+        Debug.Log("Request Payload: " + json);
+
+        var req = new UnityWebRequest(apiURL, "POST");
         byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
         req.uploadHandler = new UploadHandlerRaw(jsonToSend);
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         req.SetRequestHeader("Content-Type", "application/json");
-        req.SetRequestHeader("Authorization", "Bearer " + apiKey);
-        req.SetRequestHeader("Connection", "keep-alive");
+        //req.SetRequestHeader("Authorization",apiKey);
+        //req.SetRequestHeader("Connection", "keep-alive");
 
         botHandler.IsWaiting(true);
         yield return req.SendWebRequest();
 
         Debug.LogWarning(req.result);
-        Debug.Log("Request Payload: " + json);
 
         //Debug.Log($"down handler : {req.downloadHandler.text}");
         byte[] result = req.downloadHandler.data;
         string responseText = System.Text.Encoding.UTF8.GetString(result);
 
-        Debug.Log("Response: " + responseText);
-        JObject jsonObj = JObject.Parse(responseText);
+        Message resp = JsonUtility.FromJson<Message>(responseText);
+        Debug.Log($"message.content: {resp.content}");
+        try
+        {
+            JObject jsonObj = JObject.Parse(responseText);
+            Debug.Log($"jsonObj: {jsonObj}");
 
-        Debug.Log($"jsonObj: {jsonObj}");
-        Resp resp = JsonUtility.FromJson<Resp>(responseText);
-        Debug.Log($"resp.msg: {resp.response}");
-        callback(resp.response);
+            if (jsonObj["message"] != null && jsonObj["message"]["content"] != null)
+            {
+                string botMsg = jsonObj["message"]["content"].ToString();
+                callback(botMsg);
+            }
+            else if (jsonObj["error"] != null)
+            {
+                Debug.LogError("Server returned error: " + jsonObj["error"]);
+            }
+            else
+            {
+                Debug.LogError("Unexpected JSON structure.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("JSON parse error: " + ex.Message);
+        }
 
     }
 
