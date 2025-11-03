@@ -92,7 +92,7 @@ public class VideoHandler : MonoBehaviour
 
     public void GoIdle(){
         if(gameManager.genderAI == AIGender.Male){
-            int randomNum = Random.Range(0, 2);
+            int randomNum = Random.Range(0, 1);
             vidPlayer.clip = vidClips_Male[randomNum];
 
         }else if(gameManager.genderAI == AIGender.Female){

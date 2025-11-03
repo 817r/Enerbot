@@ -81,4 +81,8 @@ public class AzureTTSRest : MonoBehaviour
             Debug.LogError("❌ Failed to load audio: " + www.error);
         }
     }
+    public void RecordVoice()
+    {
+
+    }
 }

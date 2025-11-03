@@ -12,7 +12,7 @@ public class SpeechRecognitionHandler : MonoBehaviour
     public UIHandler uiHandler;
     public AzureAPIHandler azureAPI;
     // public TestAzureAPI testAzureAPI;
-    public Custom_GC_TextToSpeech_SimpleExample gcTTS;
+    //public Custom_GC_TextToSpeech_SimpleExample gcTTS;
     public AimaBotHandler aimaHandler;
     public VideoHandler vidHandler;
     public AzureTTSRest azureTTS;

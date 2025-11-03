@@ -17,10 +17,10 @@ public class AimaBotHandler : MonoBehaviour
     private void Start() {
         if(initUseTypewriter){
             typeWriter.UseTypewriterFX(initGreeting);
-            gctts.SynthesizeButtonOnClickHandler(initGreeting);
+           // gctts.SynthesizeButtonOnClickHandler(initGreeting);
         }else{
             uiHandler.outputText_AI.text = initGreeting;
-            gctts.SynthesizeButtonOnClickHandler(initGreeting);
+            //gctts.SynthesizeButtonOnClickHandler(initGreeting);
         }
     }
 

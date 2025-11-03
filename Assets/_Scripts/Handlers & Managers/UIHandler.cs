@@ -21,8 +21,9 @@ public class UIHandler : MonoBehaviour
 
     [Header("References")]
     public SpeechRecognitionHandler speechRecogHandler;
+    public AzureeSTT azureSTT;
 
-    
+
     [DllImport("user32.dll")]
     private static extern bool ShowWindow(System.IntPtr windowHandler, int nCmdShow);
     private const int SW_MINIMIZE = 6;
@@ -70,5 +71,16 @@ public class UIHandler : MonoBehaviour
     private void RefreshScene(){
         GameManager_AIMA.Instance.ReloadCurrentScene();
     }
-
+    public void ExitApplication()
+    {
+        Application.Quit(); 
+    }
+    public void UseMic()
+    {
+        azureSTT.StartRecognition();
+    }
+    public void StopUseMic()
+    {
+        azureSTT.StopRecognition();
+    }
 }
