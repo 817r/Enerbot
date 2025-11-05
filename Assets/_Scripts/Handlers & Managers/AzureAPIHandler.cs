@@ -189,11 +189,18 @@ public class AzureAPIHandler : MonoBehaviour
 
     }
 
+    //[System.Serializable]
+    //public class Message
+    //{
+    //    public string role;
+    //    public string content;
+    //}
+
     [System.Serializable]
     public class Message
     {
         public string role;
-        public string content;
+        public string response;
     }
 
     [System.Serializable]
@@ -202,16 +209,23 @@ public class AzureAPIHandler : MonoBehaviour
         public List<Message> messages = new List<Message>(); // MUST be public + initialized
     }
 
+    public class UserQuery
+    {
+        public string query;
+    }
+
     public IEnumerator SendChatReqNew(string msgContent, OnSendChatRequestFinished callback)
     {
-        var user = new UserData();
+        //var user = new UserData();
 
-        var message = new Message();
-        message.role = "user";
-        message.content = msgContent;
-        user.messages.Add(message);
+        //var message = new Message();
+        //message.role = "user";
+        //message.content = msgContent;
+        //user.messages.Add(message);
+        var user = new UserQuery();
+        user.query = msgContent;
 
-        Debug.Log($"msgContent: {message.content}");
+        Debug.Log($"msgContent: {user.query}");
 
         string json = JsonUtility.ToJson(user, true);
         Debug.Log("Request Payload: " + json);
@@ -221,7 +235,7 @@ public class AzureAPIHandler : MonoBehaviour
         req.uploadHandler = new UploadHandlerRaw(jsonToSend);
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         req.SetRequestHeader("Content-Type", "application/json");
-        //req.SetRequestHeader("Authorization",apiKey);
+        req.SetRequestHeader("Authorization",apiKey);
         //req.SetRequestHeader("Connection", "keep-alive");
 
         botHandler.IsWaiting(true);
@@ -234,30 +248,33 @@ public class AzureAPIHandler : MonoBehaviour
         string responseText = System.Text.Encoding.UTF8.GetString(result);
 
         Message resp = JsonUtility.FromJson<Message>(responseText);
-        Debug.Log($"message.content: {resp.content}");
-        try
-        {
-            JObject jsonObj = JObject.Parse(responseText);
-            Debug.Log($"jsonObj: {jsonObj}");
+        Debug.Log($"message.content: {resp.response}");
+        //try
+        //{
+        //    JObject jsonObj = JObject.Parse(responseText);
+        //    Debug.Log($"jsonObj: {jsonObj}");
 
-            if (jsonObj["message"] != null && jsonObj["message"]["content"] != null)
-            {
-                string botMsg = jsonObj["message"]["content"].ToString();
-                callback(botMsg);
-            }
-            else if (jsonObj["error"] != null)
-            {
-                Debug.LogError("Server returned error: " + jsonObj["error"]);
-            }
-            else
-            {
-                Debug.LogError("Unexpected JSON structure.");
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError("JSON parse error: " + ex.Message);
-        }
+        //    if (jsonObj["message"] != null && jsonObj["message"]["content"] != null)
+        //    {
+        //        string botMsg = jsonObj["message"]["content"].ToString();
+        //        callback(botMsg);
+        //    }
+        //    else if (jsonObj["error"] != null)
+        //    {
+        //        Debug.LogError("Server returned error: " + jsonObj["error"]);
+        //    }
+        //    else
+        //    {
+        //        Debug.LogError("Unexpected JSON structure.");
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Debug.LogError("JSON parse error: " + ex.Message);
+        //}
+        string _botMsg = resp.response.Split('[')[0].Trim();
+        callback(_botMsg);
+
 
     }
 

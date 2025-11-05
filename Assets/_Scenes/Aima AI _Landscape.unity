@@ -8482,7 +8482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae12952a03b013842ab45379f7228c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiURL: https://app-backend-j2pvx6l35ibu4.azurewebsites.net/chat
+  apiURL: https://enerbot-pdhub.azurewebsites.net/ask
   apiKey: 
   botHandler: {fileID: 2099420104}
 --- !u!1 &1536040654
